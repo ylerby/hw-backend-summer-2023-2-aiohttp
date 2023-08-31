@@ -18,4 +18,3 @@ class Store:
 def setup_store(app: "Application"):
     app.database = Database()
     app.store = Store(app)
-    app.admins = AdminAccessor(app)

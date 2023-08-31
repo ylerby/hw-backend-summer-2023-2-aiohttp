@@ -16,3 +16,7 @@ class Database:
 
     def clear(self):
         self.themes = []
+
+    @property
+    def next_admin_id(self) -> int:
+        return len(self.admins) + 1
