@@ -11,8 +11,9 @@ if typing.TYPE_CHECKING:
 class Store:
     def __init__(self, app: "Application"):
         from app.store.quiz.accessor import QuizAccessor
-        self.admins = AdminAccessor(app)
+
         self.quizzes = QuizAccessor(app)
+        self.admins = AdminAccessor(app)
 
 
 def setup_store(app: "Application"):
