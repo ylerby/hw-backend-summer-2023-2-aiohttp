@@ -19,6 +19,7 @@ class Application(AiohttpApplication):
     config: Optional[Config] = None
     store: Optional[Store] = None
     database: Optional[Database] = None
+    admins: Optional[Admin] = None
 
 
 class Request(AiohttpRequest):

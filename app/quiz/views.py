@@ -4,7 +4,6 @@ from app.quiz.schemes import (
 from app.web.app import View
 from app.web.utils import json_response
 
-
 # TODO: добавить проверку авторизации для этого View
 class ThemeAddView(View):
     # TODO: добавить валидацию с помощью aiohttp-apispec и marshmallow-схем
