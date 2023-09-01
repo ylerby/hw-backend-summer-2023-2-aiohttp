@@ -1,5 +1,6 @@
 import typing
 from dataclasses import dataclass
+from hashlib import sha256
 
 import yaml
 
@@ -34,6 +35,7 @@ def setup_config(app: "Application", config_path: str):
     # TODO: добавить BotConfig и SessionConfig по данным из config.yml
     with open(config_path, "r") as f:
         raw_config = yaml.safe_load(f)
+
 
     app.config = Config(
         admin=AdminConfig(

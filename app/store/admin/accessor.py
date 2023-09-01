@@ -27,6 +27,7 @@ class AdminAccessor(BaseAccessor):
         return None
 
     async def create_admin(self, email: str, password: str) -> Admin:
+        password = sha256(password.encode()).hexdigest()
         new_admin = Admin(email=email, password=password, id=self.app.database.next_admin_id)
         self.app.database.admins.append(new_admin)
         return new_admin
