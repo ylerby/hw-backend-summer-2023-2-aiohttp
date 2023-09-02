@@ -22,7 +22,7 @@ class AdminAccessor(BaseAccessor):
     async def get_by_email(self, email: str) -> Optional[Admin]:
         for admin in self.app.database.admins:
             if admin.email == email:
-                admin.password = sha256(admin.password.encode())
+                admin.password = sha256(admin.password.encode()).hexdigest()
                 return admin
         return None
 
