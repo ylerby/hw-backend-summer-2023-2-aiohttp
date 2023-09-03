@@ -2,12 +2,13 @@ import json
 from hashlib import sha256
 from typing import Optional
 from aiohttp.web_response import json_response
-from aiohttp.web_exceptions import HTTPForbidden, HTTPBadRequest, HTTPUnprocessableEntity, HTTPNotImplemented, \
+from aiohttp.web_exceptions import HTTPForbidden, HTTPBadRequest, HTTPNotImplemented, \
     HTTPNotFound
-from aiohttp_apispec import docs, response_schema
+from aiohttp_session import get_session
 
 from app.admin.models import Admin
 from app.web.app import View
+from app.web.mixins import AuthRequiredMixin
 from tests.utils import ok_response
 
 
@@ -23,6 +24,9 @@ class AdminLoginView(View):
             raise HTTPBadRequest(text=json.dumps({"email": ["Missing data for required field."]}),
                                  reason="Email field is required")
 
+        session = await get_session(self.request)
+        session["key"] = self.request.app.config.session.key
+
         for user in self.store.admins.app.database.admins:
             if user.email == email and user.password == password:
                 return json_response(ok_response({
@@ -35,10 +39,10 @@ class AdminLoginView(View):
         raise HTTPNotImplemented
 
 
-class AdminCurrentView(View):
+class AdminCurrentView(AuthRequiredMixin, View):
     async def get(self):
         admin_email = self.request.app.database.admins[0].email
-        admin: Optional["Admin"] = self.request.app.store.admins.get_by_email(email=admin_email)
+        admin: Optional["Admin"] = await self.request.app.store.admins.get_by_email(email=admin_email)
 
         if admin:
             return json_response(ok_response({

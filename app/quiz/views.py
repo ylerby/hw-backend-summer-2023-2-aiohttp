@@ -8,14 +8,14 @@ from app.quiz.schemes import (
     ThemeSchema, QuestionSchema,
 )
 from app.web.app import View
+from app.web.mixins import AuthRequiredMixin
 from app.web.utils import json_response
 
 
-# TODO: добавить проверку авторизации для этого View
-class ThemeAddView(View):
+class ThemeAddView(AuthRequiredMixin, View):
     # TODO: добавить валидацию с помощью aiohttp-apispec и marshmallow-схем
     async def post(self):
-
+        await self.check_auth(self.request)
         data = await self.request.json()
 
         try:
@@ -38,8 +38,10 @@ class ThemeAddView(View):
         raise HTTPNotImplemented
 
 
-class ThemeListView(View):
+class ThemeListView(AuthRequiredMixin, View):
     async def get(self):
+        await self.check_auth(self.request)
+
         themes = await self.request.app.store.quizzes.list_themes()
         raw_themes = [ThemeSchema().dump(theme) for theme in themes]
         return json_response(data={"themes": raw_themes})
@@ -48,8 +50,10 @@ class ThemeListView(View):
         raise HTTPNotImplemented
 
 
-class QuestionAddView(View):
+class QuestionAddView(AuthRequiredMixin, View):
     async def post(self):
+        await self.check_auth(self.request)
+
         data = await self.request.json()
         title = data.get("title", None)
         theme_id = data.get("theme_id", None)
@@ -83,8 +87,10 @@ class QuestionAddView(View):
         raise HTTPNotImplemented
 
 
-class QuestionListView(View):
+class QuestionListView(AuthRequiredMixin, View):
     async def get(self):
+        await self.check_auth(self.request)
+
         try:
             theme_id = self.request.query["theme_id"]
         except KeyError:
