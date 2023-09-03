@@ -11,8 +11,6 @@ if typing.TYPE_CHECKING:
 class AdminAccessor(BaseAccessor):
     async def connect(self, app: "Application"):
         self.app = app
-        # TODO: создать админа по данным в config.yml здесь
-
         self.app.database.admins.append(Admin(id=self.app.database.next_admin_id, email=self.app.config.admin.email,
                                               password=self.app.config.admin.password))
 

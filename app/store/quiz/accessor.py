@@ -30,8 +30,8 @@ class QuizAccessor(BaseAccessor):
             return None
 
     async def create_question(self, title: str, theme_id: int, answers: list[Answer]) -> Question:
-        id = self.app.database.next_question_id
-        question = Question(id=id, title=title, theme_id=theme_id, answers=answers)
+        id_ = self.app.database.next_question_id
+        question = Question(id=id_, title=title, theme_id=theme_id, answers=answers)
         self.app.database.questions.append(question)
         return question
 
