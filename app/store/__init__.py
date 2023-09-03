@@ -1,7 +1,7 @@
 import typing
 
-from app.admin.models import Admin
 from app.store.admin.accessor import AdminAccessor
+from app.store.bot.manager import BotManager
 from app.store.database.database import Database
 
 if typing.TYPE_CHECKING:
@@ -14,6 +14,7 @@ class Store:
 
         self.quizzes = QuizAccessor(app)
         self.admins = AdminAccessor(app)
+        self.bots_manager = BotManager(app)
 
 
 def setup_store(app: "Application"):

@@ -24,12 +24,22 @@ class QuizAccessor(BaseAccessor):
         return self.app.database.themes
 
     async def get_question_by_title(self, title: str) -> Optional[Question]:
-        raise NotImplementedError
+        for question in self.app.database.questions:
+            if question.title == title:
+                return question
+            return None
 
-    async def create_question(
-        self, title: str, theme_id: int, answers: list[Answer]
-    ) -> Question:
-        raise NotImplementedError
+    async def create_question(self, title: str, theme_id: int, answers: list[Answer]) -> Question:
+        id = self.app.database.next_question_id
+        question = Question(id=id, title=title, theme_id=theme_id, answers=answers)
+        self.app.database.questions.append(question)
+        return question
 
     async def list_questions(self, theme_id: Optional[int] = None) -> list[Question]:
-        raise NotImplementedError
+        result = []
+        if theme_id:
+            for question in self.app.database.questions:
+                if question.theme_id == theme_id:
+                    result.append(question)
+            return result
+        return self.app.database.questions
