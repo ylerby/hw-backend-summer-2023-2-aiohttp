@@ -2,10 +2,10 @@ import json
 from typing import Optional
 
 from aiohttp.web_exceptions import HTTPConflict, HTTPBadRequest, HTTPNotImplemented, HTTPNotFound
-from aiohttp_apispec import request_schema, response_schema
+from aiohttp_apispec import request_schema, response_schema, querystring_schema
 
 from app.quiz.schemes import (
-    ThemeSchema, QuestionSchema,
+    ThemeSchema, QuestionSchema, ThemeListSchema, ThemeIdSchema, ListQuestionSchema,
 )
 from app.web.app import View
 from app.web.mixins import AuthRequiredMixin
@@ -14,6 +14,8 @@ from app.web.utils import json_response
 
 class ThemeAddView(AuthRequiredMixin, View):
     # TODO: добавить валидацию с помощью aiohttp-apispec и marshmallow-схем
+    @request_schema(ThemeSchema)
+    @response_schema(ThemeSchema, 200)
     async def post(self):
         await self.check_auth(self.request)
         data = await self.request.json()
@@ -39,6 +41,7 @@ class ThemeAddView(AuthRequiredMixin, View):
 
 
 class ThemeListView(AuthRequiredMixin, View):
+    @response_schema(ThemeListSchema, 200)
     async def get(self):
         await self.check_auth(self.request)
 
@@ -51,6 +54,8 @@ class ThemeListView(AuthRequiredMixin, View):
 
 
 class QuestionAddView(AuthRequiredMixin, View):
+    @request_schema(QuestionSchema)
+    @response_schema(QuestionSchema, 200)
     async def post(self):
         await self.check_auth(self.request)
 
@@ -88,6 +93,8 @@ class QuestionAddView(AuthRequiredMixin, View):
 
 
 class QuestionListView(AuthRequiredMixin, View):
+    @querystring_schema(ThemeIdSchema)
+    @response_schema(ListQuestionSchema, 200)
     async def get(self):
         await self.check_auth(self.request)
 

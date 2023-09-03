@@ -4,15 +4,19 @@ from typing import Optional
 from aiohttp.web_response import json_response
 from aiohttp.web_exceptions import HTTPForbidden, HTTPBadRequest, HTTPNotImplemented, \
     HTTPNotFound
+from aiohttp_apispec import request_schema, response_schema, querystring_schema
 from aiohttp_session import get_session
 
 from app.admin.models import Admin
+from app.admin.schemes import AdminSchema, AdminResponseSchema
 from app.web.app import View
 from app.web.mixins import AuthRequiredMixin
 from tests.utils import ok_response
 
 
 class AdminLoginView(View):
+    @request_schema(AdminSchema)
+    @response_schema(AdminResponseSchema, 200)
     async def post(self):
         data = await self.request.json()
         email: Optional[str] = data.get("email", None)
@@ -40,6 +44,8 @@ class AdminLoginView(View):
 
 
 class AdminCurrentView(AuthRequiredMixin, View):
+    @querystring_schema(AdminSchema)
+    @response_schema(AdminResponseSchema, 200)
     async def get(self):
         admin_email = self.request.app.database.admins[0].email
         admin: Optional["Admin"] = await self.request.app.store.admins.get_by_email(email=admin_email)

@@ -3,7 +3,7 @@ from marshmallow import Schema, fields
 
 class ThemeSchema(Schema):
     id = fields.Int(required=False)
-    title = fields.Str(required=True)
+    title = fields.Str(required=False)
 
 
 class ThemeResponseSchema(ThemeSchema):
