@@ -13,7 +13,7 @@ class AdminAccessor(BaseAccessor):
         self.app = app
         # TODO: создать админа по данным в config.yml здесь
 
-        self.app.database.admins.append(Admin(id=1, email=self.app.config.admin.email,
+        self.app.database.admins.append(Admin(id=self.app.database.next_admin_id, email=self.app.config.admin.email,
                                               password=self.app.config.admin.password))
 
     async def disconnect(self, app: "Application"):
