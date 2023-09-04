@@ -1,6 +1,7 @@
 import typing
 from typing import Optional
 
+from aiohttp import TCPConnector
 from aiohttp.client import ClientSession
 
 from app.base.base_accessor import BaseAccessor
@@ -21,12 +22,14 @@ class VkApiAccessor(BaseAccessor):
         self.ts: Optional[int] = None
 
     async def connect(self, app: "Application"):
-        # TODO: добавить создание aiohttp ClientSession,
-        #  получить данные о long poll сервере с помощью метода groups.getLongPollServer
-        #  вызвать метод start у Poller
-        raise NotImplementedError
+        self.session = ClientSession(connector=TCPConnector(verify_ssl=False))
+        await self._get_long_poll_service()
+        self.poller = Poller(app.store)
+        self.logger.info("start polling")
+        await self.poller.start()
 
     async def disconnect(self, app: "Application"):
+        await self.poller.stop()
         # TODO: закрыть сессию и завершить поллер
         raise NotImplementedError
 
